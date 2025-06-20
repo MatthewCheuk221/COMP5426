@@ -14,7 +14,7 @@ mpicc assignment_2.c -o assignment_2 -lm -Wall -pedantic
 
 To run assignment_2.c
 
-mpirun -np <number_of_processes> (--oversubscribe if the number of processes to be created is more than the number of processors) ./assignment_2 <rows> <columns> <float/double>
+mpirun -np <number_of_processes> (--oversubscribe if the number of processes to be created is more than the number of processors) ./assignment_2 <number_of_rows> <number_of_columns> <float/double>
 
 Number of processors available for pthreads in soitpa10008/soitpa10009/soitpa10010: 4
 
