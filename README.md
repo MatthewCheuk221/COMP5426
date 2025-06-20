@@ -1,10 +1,10 @@
 Disclaimer: These materials are what you will be expected to deliver in this Unit of Study and shall be regarded as indicative only.
 
-To compile assignment_1.c
+To compile assignment_1.c (Linux only)
 
 gcc assignment_1.c -o assignment_1 -pthread -D_GNU_SOURCE -Wall -pedantic
 
-To run assignment_1.c
+To run assignment_1.c (Linux only)
 
 ./assignment_1 <matrices_A_and_D_rows> <matrix_A_columns_and_matrix_B_rows> <matrix_B_columns_and_matrix_C_rows> <matrices_C_and_D_columns> <float/double> <number_of_threads>
 
