@@ -1,5 +1,5 @@
 #!/bin/bash
-PBS -l walltime=00:04:00,nodes=4:ppn=2,mem=1GB
+PBS -l walltime=00:04:00,nodes=2:ppn=4,mem=1GB
 export PATH=/opt/torque-6.1.3/bin:$PATH
 echo 'export PATH=/opt/torque-6.1.3/bin:$PATH' >> ~/.bashrc
 source ~/.bashrc
