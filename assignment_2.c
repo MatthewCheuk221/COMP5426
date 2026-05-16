@@ -137,7 +137,7 @@ double sequential_dot_product(void *matrix, void *result, int N, int M, int is_f
     return MPI_Wtime() - start_time;
 }
 
-// memory-distributing dot product computation
+// distributed-memory dot product computation
 double distributed_dot_product(void *matrix, void *result, int N, int M, int is_float, int rank, int size) {
 
     double start_time, finish_time;
@@ -171,7 +171,7 @@ double distributed_dot_product(void *matrix, void *result, int N, int M, int is_
         start_time = MPI_Wtime();
 
         if (rank == 0) {
-            printf("Starting workload allocation for memory-distributing execution...\n");
+            printf("Starting workload allocation for distributed-memory execution...\n");
 
             // process 0 keeps its own rows
             memcpy(local_rows_float, matrix_float, rows * M * sizeof(float));
@@ -230,7 +230,7 @@ double distributed_dot_product(void *matrix, void *result, int N, int M, int is_
         start_time = MPI_Wtime();
 
         if (rank == 0) {
-            printf("Starting workload allocation for memory-distributing execution...\n");
+            printf("Starting workload allocation for distributed-memory execution...\n");
 
             // process 0 keeps its own rows
             memcpy(local_rows_double, matrix_double, rows * M * sizeof(double));
@@ -298,7 +298,7 @@ int compare_results(void *seq_result, void *dis_result, int M, int is_float) {
 
                 // tolerance for float calculations (1e-5 or 0.001%)
                 if (error > 1e-5f) {
-                    printf("Mismatch at (%d, %d): Sequential: %.7f      Memory-distributing: %.7f\n", i, j, seq_result_float[i * M + j], dis_result_float[i * M + j]);
+                    printf("Mismatch at (%d, %d): Sequential: %.7f      Distributed-memory: %.7f\n", i, j, seq_result_float[i * M + j], dis_result_float[i * M + j]);
                     printf("Error: %e\n\n", error);
                     return 0;
                 }
@@ -312,11 +312,11 @@ int compare_results(void *seq_result, void *dis_result, int M, int is_float) {
             for (int j = i; j < M; j++) {
 
                 // handle error value close to zero
-                float error = fabs(dis_result_double[i * M + j] - seq_result_double[i * M + j]) / fmaxf(fabs(seq_result_double[i * M + j]), 1.0f);
+                float error = fabs(dis_result_double[i * M + j] - seq_result_double[i * M + j]) / fmax(fabs(seq_result_double[i * M + j]), 1.0);
 
                 // tolerance for double calculations (1e-10 or 0.000000001%)
                 if (error > 1e-10) {
-                    printf("Mismatch at (%d, %d): Sequential: %.15lf      Memory-distributing: %.15lf\n", i, j, seq_result_double[i * M + j], dis_result_double[i * M + j]);
+                    printf("Mismatch at (%d, %d): Sequential: %.15lf      Distributed-memory: %.15lf\n", i, j, seq_result_double[i * M + j], dis_result_double[i * M + j]);
                     printf("Error: %e\n\n", error);
                     return 0;
                 }
@@ -380,20 +380,20 @@ int main(int argc, char *argv[]) {
             printf("Sequential execution time: %f second(s)\n\n", seq_time);
         }
 
-        // memory-distributing computation by all processes
+        // distributed-memory computation by all processes
         dis_time = distributed_dot_product(matrix, dis_result, N, M, is_float, rank, size);
 
         if (rank == 0) {
 
             // calculate speedup
-            printf("\nMemory-distributing execution time: %f second(s)\n\n", dis_time);
+            printf("\nDistributed-memory execution time: %f second(s)\n\n", dis_time);
             printf("Speedup: %.3f\n\n", seq_time / dis_time);
 
             // compare results
             if (compare_results(seq_result, dis_result, M, is_float)) {
-                printf("Sequential and memory-distributing results match.\n\n");
+                printf("Sequential and distributed-memory results match.\n\n");
             } else {
-                printf("Sequential and memory-distributing results do not match.\n\n");
+                printf("Sequential and distributed-memory results do not match.\n\n");
             }
         }
     }
