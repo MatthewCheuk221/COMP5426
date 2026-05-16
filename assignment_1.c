@@ -185,7 +185,7 @@ int main(int argc, char *argv[]) {
     // matrix dimensions for the chain algorithm
     int dims[4] = {m, k, l, n};
     matrix_chain_t* chain = matrix_chain_order(dims, 4);
-    if (chain->s[1][3] == 1) {
+    if (chain->s[1][3] == 2) {
         printf("Optimal multiplication order: T = A × B and then D = T × C\n\n");
     } else {
         printf("Optimal multiplication order: T = B × C and then D = A × T\n\n");
@@ -215,7 +215,7 @@ int main(int argc, char *argv[]) {
     // allocate temporary matrices for calculations (we need at most 2 for 3 matrices)
     temp_matrix = (matrix_t*)malloc(2 * sizeof(matrix_t));
     int temp_rows, temp_cols;
-    if (chain->s[1][3] == 1) {
+    if (chain->s[1][3] == 2) {
         // T = A × B: temp is A × B with dimension m×l
         temp_rows = m;
         temp_cols = l;
@@ -460,7 +460,7 @@ void* matrix_multiply_thread(void* arg) {
 
     matrix_chain_t* chain = data->chain;
 
-    if (chain->s[1][3] == 1) {
+    if (chain->s[1][3] == 2) {
         // for the order T = A × B and then D = T × C:
         // T = A × B (m×k × k×l = m×l)
         multiply_matrices(
@@ -540,7 +540,7 @@ void* matrix_multiply_thread(void* arg) {
 // sequential matrix multiplication
 void sequential_matrix_multiplication(matrix_t* matrices, matrix_t* result, matrix_t* temp, int is_float, matrix_chain_t* chain) {
 
-    if (chain->s[1][3] == 1) {
+    if (chain->s[1][3] == 2) {
         // for the order T = A × B and then D = T × C:
         // T = A × B (m×k × k×l = m×l)
         multiply_matrices(
